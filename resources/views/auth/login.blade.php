@@ -1,73 +1,96 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
+<x-layouts.auth.app title="Masuk">
+    <div class="col-xl-7 col-xxl-8">
+        <a href="./index.html" class="text-nowrap logo-img d-block px-4 py-9 w-100">
+            <img src="{{ asset('dist/images/logos/dark-logo.svg') }}" width="180" alt="">
+        </a>
+        <div class="d-none d-xl-flex align-items-center justify-content-center" style="height: calc(100vh - 80px);">
+            <img src="{{ asset('dist/images/backgrounds/login-security.svg') }}" alt="" class="img-fluid"
+                width="500">
+        </div>
+    </div>
+    <div class="col-xl-5 col-xxl-4">
+        <div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
+            <div class="col-sm-8 col-md-6 col-xl-9">
+                <h2 class="mb-3 fs-7 fw-bolder text-center">X-Profile 🚀</h2>
+                <p class=" mb-9 text-center">Masuk ke Dashboard</p>
+                <div class="position-relative text-center my-4">
+                    <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
                 </div>
+                <form>
+                    @csrf
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input id="email" type="email" class="form-control" name="email"
+                            aria-describedby="emailHelp">
+                        <div class="invalid-feedback">
+                            @error('email')
+                            {{ $message }}
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Kata sandi</label>
+                        <input id="password" type="password" class="form-control" name="password">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-4 rounded-2">Masuk</button>
+                </form>
             </div>
         </div>
     </div>
-</div>
-@endsection
+
+    @push('scripts')
+    <script src="{{ asset('dist/js/components/sweet-alert.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        sweetAlert('Gagal!', data.message, 'error', true, false);
+                    }
+                })
+                .catch(error => {
+                    sweetAlert('Gagal!', 'Terjadi kesalahan saat mengirim data', 'error', true, false);
+                });
+            });
+        });
+    //     document.addEventListener('DOMContentLoaded', function () {
+    //     var loginForm = document.querySelector('form');
+
+    //     if (loginForm) {
+    //         loginForm.addEventListener('submit', function (event) {
+    //             event.preventDefault();
+
+    //             var formData = new FormData(loginForm);
+
+    //             fetch('/login', {
+    //                 method: 'POST',
+    //                 body: formData
+    //             })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 if (data.success) {
+    //                     window.location.href = data.redirect;
+    //                 } else {
+    //                     sweetAlert('Gagal!', data.message, 'error', true, false);
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 sweetAlert('Gagal!', 'Terjadi kesalahan saat mengirim data', 'error', true, false);
+    //             });
+    //         });
+    //     }
+    // });
+    </script>
+    @endpush
+</x-layouts.auth.app>
