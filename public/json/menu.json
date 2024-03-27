@@ -1,0 +1,22 @@
+[
+    {
+        "menu-title": "Utama",
+        "menu-items": [
+            {
+                "url": "/dashboard",
+                "icon": "ti ti-layout-dashboard",
+                "title": "Dashboard"
+            },
+            {
+                "url": "javascript:void(0);",
+                "icon": "ti ti-notebook",
+                "title": "Catatan",
+                "menu-items": {
+                    "url": "/money",
+                    "icon": "ti ti-circle",
+                    "title": "Uang"
+                }
+            }
+        ]
+    }
+]
